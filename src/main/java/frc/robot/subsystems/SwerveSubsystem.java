@@ -50,6 +50,8 @@ public class SwerveSubsystem extends SubsystemBase {
     
     //Gets our Gyro and it's CAN number (the number is what number is assigned to it on the CAN bus)
     private final static Pigeon2 gyro = new Pigeon2(0);
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstraints.kDriveKinematics,
+        new Rotation2d(0));
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -76,9 +78,20 @@ public class SwerveSubsystem extends SubsystemBase {
         return Rotation2d.fromDegrees(getHeading());
     }
 
+    public Pose2d getPose() {
+        return odometer.getPoseMeters();
+    }
+
+    public void resetOdometry(Pose2d pose) {
+        odometer.resetPosition(pose, getRotation2d());
+    }
+
     @Override
     public void periodic(){
+        odometer.update(getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
+            backRight.getState());
         SmartDashboard.putNumber("Robot Heading", getHeading());
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().ToString()); 
     }
 
     public void stopModules(){

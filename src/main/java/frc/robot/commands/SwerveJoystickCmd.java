@@ -45,7 +45,17 @@ public class SwerveJoystickCmd extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
+  @SuppressWarnings("LocalVariableName")
   public void execute() {
+    double curTime = m_timer.get();
+    var desiredState = m_trajectory.sample(curTime);
+
+    var targetChassisSpeeds =
+        m_controller.calculate(m_pose.get(), desiredState, m_desiredRotation.get());
+    var targetModuleStates = m_kinematics.toSwerveModuleStates(targetChassisSpeeds);
+
+        m_outputModuleStates.accept(targetModuleStates);
+
     double xSpeed = xSpdFunction.get();
     double ySpeed = ySpdFunction.get();
     double turningSpeed = turningSpdFunction.get();

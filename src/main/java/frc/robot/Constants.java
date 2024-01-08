@@ -86,7 +86,13 @@ public final class Constants {
         public static final double kTeleDriveMaxAngularSpeedRadiansPerSecond = //
                 kPhysicalMaxAngularSpeedRadiansPerSecond / 4;
         public static final double kTeleDriveMaxAccelerationUnitsPerSecond = 3;
-        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;   
+        public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
+
+        public static final TrapezoidProfile.Constraints kThetaControllerConstraints = 
+                new TrapezoidProfile.Constraints(
+                        kMaxAngularSpeedRadiansPerSecond,
+                        kMaxAngularAccelerationRadiansPerSecondSquared
+                );
     }
 
     public static final class AutoConstants {
