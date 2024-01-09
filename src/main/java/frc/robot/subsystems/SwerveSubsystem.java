@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-
 public class SwerveSubsystem extends SubsystemBase {
     private final SwerveModule frontLeft = new SwerveModule(
             DriveConstants.kFrontLeftDriveMotorPort,
@@ -52,8 +51,8 @@ public class SwerveSubsystem extends SubsystemBase {
     
     //Gets our Gyro and it's CAN number (the number is what number is assigned to it on the CAN bus)
     private final static Pigeon2 gyro = new Pigeon2(0);
-    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstraints.kDriveKinematics,
-        new Rotation2d(0));
+    private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, new Rotation2d(0), null);
+
 
     public SwerveSubsystem(){
         new Thread(() -> {
@@ -76,7 +75,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return Math.IEEEremainder(gyro.getAngle(), 360);
     }
 
-    public static Rotation2d getRotation2d(){
+    public Rotation2d getRotation2d(){
         return Rotation2d.fromDegrees(getHeading());
     }
 
@@ -84,16 +83,17 @@ public class SwerveSubsystem extends SubsystemBase {
         return odometer.getPoseMeters();
     }
 
-    public void resetOdometry(Pose2d pose) {
-        odometer.resetPosition(pose, getRotation2d());
-    }
+    //public void resetOdometry(Pose2d pose) {
+      //  odometer.resetPosition(pose, getRotation2d());
+    //}
+   
 
     @Override
     public void periodic(){
         odometer.update(getRotation2d(), frontLeft.getState(), frontRight.getState(), backLeft.getState(),
-            backRight.getState());
+                backRight.getState());
         SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().ToString()); 
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString()); 
     }
 
     public void stopModules(){
